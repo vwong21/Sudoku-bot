@@ -47,18 +47,35 @@ def remove_nums(board, num_holes=40):
     return empty_board
 
 
-def solve_board(puzzle):
-    for row in range(9):
-        for col in range(9):
-            if puzzle[row][col] == 0:
-                for num in range(1, 10):
-                    if is_valid(puzzle, row, col, num):
-                        puzzle[row][col] = num
-                        if solve_board(puzzle):
-                            return True
-                        puzzle[row][col] = 0
-                return False
-    return True
+def solve_board(puzzle, row, col):
+    if row == 8 and col == 9:
+        return True
+    if col == 9:
+        row += 1
+        col = 0
+
+    if puzzle[row][col] != 0:
+        return solve_board(puzzle, row, col + 1)
+
+    for num in range(1, 10):
+        if is_valid(puzzle, row, col, num):
+            puzzle[row][col] = num
+            if solve_board(puzzle, row, col + 1):
+                return True
+            puzzle[row][col] = 0
+    return False
+
+    # for row in range(9):
+    #     for col in range(9):
+    #         if puzzle[row][col] == 0:
+    #             for num in range(1, 10):
+    #                 if is_valid(puzzle, row, col, num):
+    #                     puzzle[row][col] = num
+    #                     if solve_board(puzzle):
+    #                         return True
+    #                     puzzle[row][col] = 0
+    #             return False
+    # return True
 
 
 if __name__ == "__main__":
@@ -68,7 +85,7 @@ if __name__ == "__main__":
     for row in puzzle:
         print(row)
 
-    solved = solve_board(puzzle)
+    solved = solve_board(puzzle, 0, 0)
     print("Solved: ")
 
     for row in puzzle:

@@ -14,25 +14,30 @@ def is_valid(board, row, col, num):
     return True
 
 
-def make_board(board):
-    for row in range(9):
-        for col in range(9):
-            if board[row][col] == 0:
-                nums = list(range(1, 10))
-                random.shuffle(nums)
-                for num in nums:
-                    if is_valid(board, row, col, num):
-                        board[row][col] = num
-                        if make_board(board):
-                            return True
-                        board[row][col] = 0
-                return False
-    return True
+def make_board(board, row, col):
+    if row == 8 and col == 9:
+        return True
+    if col == 9:
+        row += 1
+        col = 0
+
+    if board[row][col] != 0:
+        return make_board(board, row, col + 1)
+
+    nums = list(range(1, 10))
+    random.shuffle(nums)
+    for num in nums:
+        if is_valid(board, row, col, num):
+            board[row][col] = num
+            if make_board(board, row, col + 1):
+                return True
+            board[row][col] = 0
+    return False
 
 
 def create_sudoku():
     board = [[0] * 9 for _ in range(9)]
-    make_board(board)
+    make_board(board, 0, 0)
     return board
 
 
@@ -64,18 +69,6 @@ def solve_board(puzzle, row, col):
                 return True
             puzzle[row][col] = 0
     return False
-
-    # for row in range(9):
-    #     for col in range(9):
-    #         if puzzle[row][col] == 0:
-    #             for num in range(1, 10):
-    #                 if is_valid(puzzle, row, col, num):
-    #                     puzzle[row][col] = num
-    #                     if solve_board(puzzle):
-    #                         return True
-    #                     puzzle[row][col] = 0
-    #             return False
-    # return True
 
 
 if __name__ == "__main__":

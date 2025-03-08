@@ -14,7 +14,7 @@ def is_valid(board, row, col, num):
     return True
 
 
-def solve(board):
+def make_board(board):
     for row in range(9):
         for col in range(9):
             if board[row][col] == 0:
@@ -23,7 +23,7 @@ def solve(board):
                 for num in nums:
                     if is_valid(board, row, col, num):
                         board[row][col] = num
-                        if solve(board):
+                        if make_board(board):
                             return True
                         board[row][col] = 0
                 return False
@@ -32,7 +32,7 @@ def solve(board):
 
 def create_sudoku():
     board = [[0] * 9 for _ in range(9)]
-    solve(board)
+    make_board(board)
     return board
 
 
@@ -47,7 +47,29 @@ def remove_nums(board, num_holes=40):
     return empty_board
 
 
+def solve_board(puzzle):
+    for row in range(9):
+        for col in range(9):
+            if puzzle[row][col] == 0:
+                for num in range(1, 10):
+                    if is_valid(puzzle, row, col, num):
+                        puzzle[row][col] = num
+                        if solve_board(puzzle):
+                            return True
+                        puzzle[row][col] = 0
+                return False
+    return True
+
+
 if __name__ == "__main__":
-    solved = create_sudoku()
-    puzzle = remove_nums(solved)
-    print(puzzle)
+    reveal = create_sudoku()
+    puzzle = remove_nums(reveal, num_holes=42)
+    print("Unsolved:")
+    for row in puzzle:
+        print(row)
+
+    solved = solve_board(puzzle)
+    print("Solved: ")
+
+    for row in puzzle:
+        print(row)
